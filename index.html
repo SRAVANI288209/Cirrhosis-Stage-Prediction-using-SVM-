@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cirrhosis Stage Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        label {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        input, select, button {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #eef6ff;
+        }
+        .error {
+            margin-top: 20px;
+            color: #b91c1c;
+            font-weight: bold;
+        }
+        .probabilities {
+            margin-top: 10px;
+            display: grid;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cirrhosis Stage Predictor</h1>
+
+        <form method="post">
+            <div class="grid">
+                {% for feature in features %}
+                    <div class="field">
+                        <label for="{{ feature }}">{{ feature }}</label>
+                        {% if feature in categorical_features %}
+                            <select name="{{ feature }}" required>
+                                {% for value in category_values.get(feature, []) %}
+                                    <option value="{{ value }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="number" name="{{ feature }}" step="any" required />
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit">Predict Stage</button>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if result is not none %}
+            <div class="result">
+                <h2>Predicted Stage: {{ result }}</h2>
+                {% if probabilities %}
+                    <div class="probabilities">
+                        {% for label, prob in probabilities.items() %}
+                            <div><strong>{{ label }}:</strong> {{ '%.4f' % prob }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
