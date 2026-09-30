@@ -8,3 +8,4 @@ joblib>=1.4.0,<2.0.0
 streamlit
 joblib>=1.4.0,<2.0.0
 joblib
+joblib>=1.4.0,<2.0.0
